@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+body { transition: background-color 0.3s ease; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+.glass-blur { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+.dark .glass-blur { background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid rgba(255,255,255,0.1); }
+.text-gradient { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+#aiPanel { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease; z-index: 1000; }
+.custom-scroll::-webkit-scrollbar { width: 6px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.dark .custom-scroll::-webkit-scrollbar-thumb { background: #334155; }
+
+.visualizer-bar { width: 4px; background: #6366f1; margin: 0 1px; border-radius: 10px; height: 10px; animation: bounce 1.2s infinite; }
+@keyframes bounce { 0%, 100% { height: 10px; } 50% { height: 35px; } }
+
+.hidden-element { display: none !important; }
+.ledger-badge { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #10b981; }

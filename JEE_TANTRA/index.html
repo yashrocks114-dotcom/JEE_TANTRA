@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEE TANTRA | Yash Mishra Portal</title>
+    
+    <!-- Dependencies Optimized for 32-bit Systems -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        // Initialize Mermaid with matching theme
+        mermaid.initialize({ startOnLoad: false, theme: 'base', themeVariables: { primaryColor: '#e0e7ff', primaryBorderColor: '#6366f1', primaryTextColor: '#1e293b', lineType: 'curve' } });
+    </script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+                }
+            }
+        }
+    </script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500/20 overflow-x-hidden w-full">
+
+    <!-- Global Notifications -->
+    <div id="globalToast" class="fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-4 bg-slate-900 text-white rounded-full text-xs font-black shadow-2xl z-[9999] hidden uppercase tracking-widest animate-bounce">Verified</div>
+
+    <!-- Navigation Header -->
+    <nav class="glass-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl shadow-[0_10px_20px_rgba(99,102,241,0.3)] flex items-center justify-center rotate-6 transition-transform hover:rotate-0 border-2 border-indigo-400 bg-gradient-to-br from-indigo-600 to-slate-900 text-white relative overflow-hidden group">
+                    <i data-lucide="atom" size="28" class="group-hover:animate-spin transition-all duration-700"></i>
+                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                </div>
+                <div class="leading-none flex flex-col">
+                    <span class="text-xl md:text-2xl font-black tracking-tighter uppercase">JEE TANTRA</span>
+                    <span class="text-[9px] font-black text-indigo-500 tracking-[0.4em] uppercase">Core Engine v3.2</span>
+                </div>
+            </div>
+
+            <!-- Tab Matrix -->
+            <div class="hidden lg:flex items-center bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-2xl gap-1 border border-slate-200 dark:border-slate-700">
+                <button onclick="switchTab('video')" id="tab-btn-video" class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all bg-white dark:bg-slate-700 text-indigo-600 shadow-sm uppercase">Lectures</button>
+                <button onclick="switchTab('blog')" id="tab-btn-blog" class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-indigo-600 uppercase">Blogs</button>
+                <button onclick="switchTab('podcast')" id="tab-btn-podcast" class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-indigo-600 uppercase">Podcast</button>
+                <button onclick="switchTab('notebook')" id="tab-btn-notebook" class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-indigo-600 uppercase">NotebookLM</button>
+                <button onclick="switchTab('meet')" id="tab-btn-meet" class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-500 dark:text-slate-400 hover:text-indigo-600 uppercase">Tantra Meet</button>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="toggleTheme()" class="p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm transition-transform active:scale-90">
+                    <i data-lucide="sun" id="icon-sun" class="hidden text-amber-500"></i>
+                    <i data-lucide="moon" id="icon-moon" class="text-indigo-600"></i>
+                </button>
+                <button onclick="toggleChat()" class="p-3 bg-indigo-600 text-white rounded-xl shadow-lg hover:bg-indigo-700 active:scale-90 transition-all"><i data-lucide="sparkles" size="22"></i></button>
+                
+                <div id="userProfile" class="hidden-element items-center gap-3 ml-2">
+                    <button onclick="openAccountDash()" class="flex items-center gap-3 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:border-indigo-500 transition-all active:scale-95 group">
+                        <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-transform">
+                            <i data-lucide="fingerprint" size="16"></i>
+                        </div>
+                        <span id="userName" class="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-300"></span>
+                        <i data-lucide="chevron-down" size="14" class="text-slate-400"></i>
+                    </button>
+                </div>
+                <button id="loginTrigger" onclick="document.getElementById('loginModal').classList.remove('hidden')" class="bg-slate-950 dark:bg-white dark:text-slate-950 text-white px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl">Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Nav Bar -->
+    <div class="lg:hidden flex bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 p-2 overflow-x-auto gap-2 no-scrollbar sticky top-20 z-40">
+        <button onclick="switchTab('video')" id="mob-btn-video" class="flex-1 text-center py-3 text-[10px] font-black uppercase tracking-widest rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600">Lectures</button>
+        <button onclick="switchTab('blog')" id="mob-btn-blog" class="flex-1 text-center py-3 text-[10px] font-black uppercase tracking-widest rounded-xl text-slate-500">Blogs</button>
+        <button onclick="switchTab('podcast')" id="mob-btn-podcast" class="flex-1 text-center py-3 text-[10px] font-black uppercase tracking-widest rounded-xl text-slate-500">Audio</button>
+        <button onclick="switchTab('notebook')" id="mob-btn-notebook" class="flex-1 text-center py-3 text-[10px] font-black uppercase tracking-widest rounded-xl text-slate-500">LM</button>
+    </div>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 w-full">
+        <!-- Hero Section -->
+        <section class="relative rounded-[3.5rem] overflow-hidden min-h-[450px] flex items-center p-8 md:p-16 mb-16 bg-slate-950 shadow-2xl border border-slate-800 group">
+            <div id="heroImageContainer" class="absolute inset-0 z-0 opacity-50 transition-all duration-[3s]">
+                 <div class="w-full h-full bg-gradient-to-br from-indigo-950 to-slate-900 flex items-center justify-center">
+                    <i data-lucide="brain" class="text-white/5 animate-pulse" size="140"></i>
+                </div>
+            </div>
+            <div class="relative z-10 max-w-3xl">
+                <div class="inline-flex ledger-badge px-4 py-1.5 rounded-xl text-[10px] font-black tracking-widest uppercase mb-8 shadow-inner border border-emerald-500/20">Secure Node Active</div>
+                <h1 class="text-5xl sm:text-6xl md:text-8xl font-black text-white mb-6 leading-[0.85] md:leading-[0.85] tracking-tighter uppercase italic text-gradient break-words">IIT <br>TANTRA.</h1>
+                <p class="text-slate-300 text-lg md:text-2xl font-medium mb-10 leading-relaxed max-w-xl opacity-90">Decoding complexities with Yash Mishra's premium archives. Optimized for all devices.</p>
+                <button onclick="switchTab('video')" class="bg-white text-slate-900 px-12 py-4 rounded-2xl font-black uppercase tracking-widest shadow-2xl hover:bg-indigo-600 hover:text-white transition-all transform hover:-translate-y-1">Start Journey</button>
+            </div>
+        </section>
+
+        <!-- Admin Control Dash -->
+        <section id="adminSection" class="hidden-element mb-16 bg-white dark:bg-slate-900 p-8 md:p-14 rounded-[4rem] border border-slate-200 dark:border-slate-800 shadow-2xl animate-in zoom-in duration-500">
+            <h2 class="text-3xl font-black mb-12 flex items-center gap-4 text-indigo-600 uppercase italic"><i data-lucide="command"></i> Admin Console</h2>
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div class="space-y-6">
+                    <div id="dropZone" class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-[3rem] p-16 text-center bg-slate-50 dark:bg-slate-800 transition-all relative group">
+                        <input type="file" id="videoFile" accept="video/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                        <i data-lucide="upload-cloud" class="mx-auto mb-6 text-indigo-600 transition-transform group-hover:-translate-y-2" size="64"></i>
+                        <p class="text-2xl font-black uppercase tracking-tighter">Drag .MP4 File</p>
+                    </div>
+                    <div class="space-y-4">
+                        <input type="text" id="vTitle" placeholder="Title" class="w-full p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                        <input type="url" id="vUrl" placeholder="Direct Source URL (YT/MP4)" class="w-full p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                        <textarea id="vDesc" placeholder="Lecture highlights..." class="w-full p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-medium h-32 outline-none focus:ring-2 focus:ring-indigo-500 custom-scroll transition-all"></textarea>
+                        <button onclick="handleVideoPublish()" class="w-full bg-indigo-600 text-white py-6 rounded-2xl font-black uppercase tracking-widest shadow-2xl hover:bg-slate-950 transition-all active:scale-95">Deploy Content</button>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <h3 class="text-xs font-black uppercase tracking-[0.6em] text-slate-400 ml-1 italic">Blog Matrix</h3>
+                    <input type="text" id="bTitle" placeholder="Blog Headline" class="w-full p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-bold transition-all">
+                    <textarea id="bContent" placeholder="Strategy context (LaTeX $...$ symbols active)..." class="w-full p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 border-none font-medium h-[320px] outline-none custom-scroll transition-all"></textarea>
+                    <button onclick="handleBlogPublish()" class="w-full bg-slate-950 dark:bg-white dark:text-slate-950 text-white py-6 rounded-2xl font-black uppercase tracking-widest shadow-2xl hover:bg-indigo-600 transition-all">Publish Strategy</button>
+                    <button onclick="autoPopulateNotes()" class="w-full bg-emerald-600 text-white py-4 mt-4 rounded-2xl font-black uppercase tracking-widest shadow-[0_10px_30px_rgba(16,185,129,0.3)] hover:bg-emerald-500 transition-all active:scale-95"><i data-lucide="bot" class="inline mb-1 mr-2"></i> Auto-Generate 84 JEE Notes</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Content Nodes -->
+        <section id="view-video" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"></section>
+        <section id="view-blog" class="hidden-element max-w-5xl mx-auto space-y-14"></section>
+        
+        <section id="view-podcast" class="hidden-element text-center py-24 max-w-4xl mx-auto">
+            <h2 class="text-7xl font-black mb-10 tracking-tighter uppercase italic">Guru Audio</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-2xl font-medium mb-10 leading-relaxed italic">Listen to strategy briefings generated by Guru AI Node.</p>
+            
+            <input type="text" id="podcastTopic" placeholder="Enter topic (e.g., Best Motivation for IIT JEE)" class="w-full max-w-md mx-auto mb-10 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border-none outline-none font-bold text-center text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all block">
+
+            <button onclick="playAIPodcast()" class="w-36 h-36 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-[0_25px_60px_rgba(99,102,241,0.5)] mx-auto hover:scale-110 active:scale-90 transition-all relative group transition-transform"><i data-lucide="mic" size="64" fill="currentColor"></i><div class="absolute inset-0 rounded-full bg-indigo-600 animate-ping opacity-20"></div></button>
+            <p id="podcastStatus" class="mt-14 text-xs font-black uppercase tracking-[0.8em] text-indigo-500">Encryption Stream Ready</p>
+        </section>
+
+        <section id="view-notebook" class="hidden-element text-center py-12 max-w-4xl mx-auto">
+            <div class="bg-white dark:bg-slate-900 p-12 md:p-20 rounded-[5rem] border border-slate-200 dark:border-slate-800 shadow-2xl">
+                <div class="w-24 h-24 bg-indigo-600 text-white rounded-[2.5rem] flex items-center justify-center mx-auto mb-10 shadow-2xl rotate-6 italic shadow-indigo-600/20 transition-transform hover:rotate-0"><i data-lucide="layers" size="48"></i></div>
+                <h2 class="text-5xl font-black mb-8 tracking-tighter uppercase italic">NotebookLM</h2>
+                <p class="text-slate-600 dark:text-slate-400 text-xl mb-12 leading-relaxed font-medium opacity-80">Link Guru AI responses and Blogs to NotebookLM for deep voice analysis. Transform static text into digital audio deep-dives.</p>
+                <a href="https://notebooklm.google.com" target="_blank" class="inline-block bg-slate-950 dark:bg-white dark:text-slate-950 text-white px-12 py-6 rounded-2xl font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all">Link External Source</a>
+            </div>
+        </section>
+        
+        <section id="view-meet" class="hidden-element py-12 max-w-6xl mx-auto animate-in fade-in zoom-in duration-500">
+            <div class="text-center mb-10">
+                <h2 class="text-5xl font-black tracking-tighter uppercase italic text-indigo-600 mb-4">🎥 Tantra Meet Nodes</h2>
+                <p class="text-slate-500 font-medium text-lg">Encrypted peer-to-peer HD video communication with 11-digit UID joining system</p>
+            </div>
+            
+            <!-- Quick Join Section -->
+            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-800 dark:to-slate-900 p-8 rounded-[2rem] border border-indigo-200 dark:border-slate-700 shadow-lg mb-10">
+                <h3 class="text-xl font-black text-indigo-600 mb-4 flex items-center gap-2">
+                    <i class="fas fa-key"></i> Join by 11-Digit UID
+                </h3>
+                <div class="flex gap-3">
+                    <input type="number" id="joinByUID" placeholder="Enter 11-digit Meeting UID" maxlength="11"
+                        class="flex-1 px-6 py-4 rounded-xl bg-white dark:bg-slate-900 font-mono font-bold text-lg border border-indigo-300 dark:border-slate-600 outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button onclick="joinMeetingByUID(document.getElementById('joinByUID').value)" class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-black uppercase shadow-lg hover:shadow-xl transition-all">
+                        📞 Join
+                    </button>
+                </div>
+            </div>
+            
+            <div class="bg-white dark:bg-slate-900 p-8 rounded-[3rem] border border-slate-200 dark:border-slate-800 shadow-xl flex flex-col items-center justify-center mb-10 space-y-6">
+                <div class="flex flex-wrap items-center justify-center gap-4 w-full border-b border-slate-100 dark:border-slate-800 pb-6">
+                    <select id="videoQuality" class="bg-slate-100 dark:bg-slate-800 border-none px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="480">📊 Data Saver (480p 15FPS)</option>
+                        <option value="720" selected>🎬 HD Quality (720p 30FPS)</option>
+                    </select>
+                    <button onclick="document.getElementById('scheduleModal').classList.remove('hidden')" class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-100 transition-all">
+                        <i data-lucide="calendar-plus" size="14" class="inline mb-0.5"></i> Schedule
+                    </button>
+                </div>
+
+                    <div class="flex flex-col md:flex-row gap-6 w-full justify-center items-center">
+                        <button id="btnCreateRoom" onclick="createRoom()" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-3">
+                            <i data-lucide="video"></i> Initialize Node
+                        </button>
+                        <div class="text-slate-300 font-bold uppercase tracking-widest">OR</div>
+                        <div class="flex bg-slate-100 dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 w-full md:w-auto">
+                            <input type="text" id="roomCodeInput" placeholder="Enter Node Code" class="bg-transparent px-6 py-4 outline-none font-mono font-bold text-slate-900 dark:text-white uppercase tracking-widest w-full md:w-64">
+                            <button id="btnJoinRoom" onclick="joinRoom()" class="bg-slate-950 dark:bg-white dark:text-slate-950 text-white px-8 font-black uppercase tracking-widest hover:bg-slate-800 transition-all">Join</button>
+                        </div>
+                    </div>
+                </div>
+            
+                <div id="activeRoomDisplay" class="hidden text-center mb-8 bg-emerald-50 dark:bg-emerald-900/20 py-3 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                    <p class="text-emerald-600 font-black tracking-widest uppercase text-sm">Node Active: <span id="currentRoomCode" class="font-mono text-lg bg-white dark:bg-slate-950 px-3 py-1 rounded shadow-sm"></span></p>
+                </div>
+            
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="relative bg-slate-950 rounded-[2rem] overflow-hidden aspect-video shadow-xl border border-slate-800">
+                                <video id="localVideo" autoplay playsinline muted class="w-full h-full object-cover transform scale-x-[-1]"></video>
+                                <div class="absolute bottom-4 left-4 bg-black/50 backdrop-blur px-3 py-1 rounded-lg text-white text-[10px] font-black uppercase tracking-widest">You</div>
+                            </div>
+                            <div class="relative bg-slate-950 rounded-[2rem] overflow-hidden aspect-video shadow-xl border border-slate-800 group">
+                                <button id="btnKickPeer" onclick="kickPeer()" class="hidden absolute top-4 right-4 bg-red-600 text-white p-2 rounded-xl hover:bg-red-500 transition-all z-20 shadow-lg group-hover:block" title="Block User"><i data-lucide="shield-alert" size="18"></i></button>
+                                <video id="remoteVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+                                <div class="absolute inset-0 flex items-center justify-center z-0" id="waitingText">
+                                    <p class="text-slate-600 font-black uppercase tracking-[0.3em] animate-pulse text-xs">Awaiting Peer...</p>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <div id="meetControls" class="hidden max-w-md mx-auto mt-8 bg-slate-900/80 backdrop-blur-xl p-4 rounded-3xl border border-slate-700 shadow-2xl flex items-center justify-center gap-4">
+                            <button id="btnToggleMic" onclick="toggleMic()" class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-all border border-slate-600 shadow-inner"><i data-lucide="mic" id="iconMic"></i></button>
+                            <button id="btnToggleCam" onclick="toggleCam()" class="w-14 h-14 rounded-2xl bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-all border border-slate-600 shadow-inner"><i data-lucide="video" id="iconCam"></i></button>
+                            <button id="btnScreenShare" onclick="toggleScreenShare()" class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-500 transition-all shadow-[0_0_20px_rgba(99,102,241,0.4)]"><i data-lucide="monitor-up" id="iconScreen"></i></button>
+                            <button onclick="togglePiP()" class="w-14 h-14 rounded-2xl bg-slate-800 text-slate-300 flex items-center justify-center hover:text-white hover:bg-slate-700 transition-all border border-slate-600"><i data-lucide="picture-in-picture-2"></i></button>
+                        </div>
+                    </div>
+            
+                    <div id="meetChatBox" class="hidden flex-col bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 shadow-xl h-[400px] lg:h-full overflow-hidden">
+                        <div class="p-4 bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0">
+                            <h3 class="text-xs font-black uppercase tracking-widest text-indigo-600 flex items-center gap-2"><i data-lucide="message-square" size="16"></i> Chat & Polls</h3>
+                        </div>
+                        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scroll text-sm"></div>
+                        <form id="chatForm" class="p-3 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shrink-0 flex gap-2">
+                            <input type="text" id="chatInput" placeholder="/poll Question or just chat..." class="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 outline-none text-sm" required>
+                            <button type="submit" class="bg-indigo-600 text-white p-2.5 rounded-xl hover:bg-indigo-500"><i data-lucide="send" size="18"></i></button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-10">
+                    <button id="btnHangup" onclick="hangUp()" class="hidden bg-red-500 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest shadow-[0_10px_40px_rgba(239,68,68,0.4)]"><i data-lucide="phone-off" class="inline mb-1 mr-2"></i> Terminate Connection</button>
+                </div>
+            </section>
+        
+    </main>
+
+
+    <!-- Guru AI Window -->
+   
+    <div id="aiPanel" class="hidden-element fixed inset-y-0 right-0 w-full md:w-[600px] lg:w-[750px] bg-white dark:bg-[#212121] shadow-[-20px_0_100px_rgba(0,0,0,0.5)] border-l border-slate-200 dark:border-white/10 flex flex-col animate-in slide-in-from-right duration-500 z-[9999]">   
+        
+        <div class="p-4 flex items-center justify-between border-b border-slate-200 dark:border-white/5 shrink-0 bg-white dark:bg-[#212121]">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg"><i data-lucide="sparkles" size="20" fill="white"></i></div>
+                <div>
+                    <p class="font-bold text-lg leading-none">Guru AI <span class="text-[10px] bg-indigo-500/20 text-indigo-500 px-2 py-0.5 rounded font-black tracking-widest ml-1 uppercase">Pro</span></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1">
+                <button onclick="toggleChatHistory()" class="p-2 text-slate-400 hover:text-indigo-500 transition-colors rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-500/10" title="Past Chats"><i data-lucide="history" size="20"></i></button>
+                <button onclick="clearGuruChat()" class="p-2 text-slate-400 hover:text-emerald-500 transition-colors rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-500/10" title="New Chat"><i data-lucide="plus-circle" size="20"></i></button>
+                <button onclick="toggleChat()" class="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors rounded-xl hover:bg-slate-100 dark:hover:bg-white/5"><i data-lucide="x" size="24"></i></button>
+            </div>
+        </div>
+
+        <div id="chatHistoryOverlay" class="hidden absolute inset-0 top-[73px] bg-white/95 dark:bg-[#212121]/95 backdrop-blur-md z-40 flex-col border-b border-slate-200 dark:border-white/5">
+            <div class="p-4 bg-slate-50 dark:bg-[#2f2f2f] border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
+                <h3 class="font-black uppercase tracking-widest text-xs text-indigo-500"><i data-lucide="archive" size="14" class="inline mb-0.5"></i> Saved Sessions</h3>
+            </div>
+            <div id="historyList" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scroll">
+                </div>
+        </div>
+        <div id="aiHistory" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 no-scrollbar custom-scroll bg-white dark:bg-[#212121]"></div>
+
+        <div class="p-4 md:p-6 shrink-0 bg-white dark:bg-[#212121]">
+            <button onclick="document.getElementById('aiToolsTray').classList.toggle('hidden')" class="mb-3 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#2f2f2f] text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-500 transition-all flex items-center gap-2 w-max"><i data-lucide="plus" size="14"></i> Tools</button>
+            
+            <div class="hidden gap-2 mb-3 px-2 overflow-x-auto custom-scroll" id="aiToolsTray">
+                <button type="button" onclick="setAITool('chat', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-indigo-600 text-white shadow-md flex items-center gap-1 shrink-0"><i data-lucide="message-square" size="12"></i> Chat</button>
+                <button type="button" onclick="setAITool('quiz', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-indigo-500 shrink-0 flex items-center gap-1"><i data-lucide="list-checks" size="12"></i> Quiz</button>
+                <button type="button" onclick="setAITool('flowchart', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-indigo-500 shrink-0 flex items-center gap-1"><i data-lucide="git-merge" size="12"></i> Flowchart</button>
+                <button type="button" onclick="setAITool('search', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-blue-500 shrink-0 flex items-center gap-1"><i data-lucide="globe" size="12"></i> Web Search</button>
+                </div>
+           
+            <form id="aiForm" class="max-w-3xl mx-auto relative flex items-center bg-slate-100 dark:bg-[#2f2f2f] rounded-[2rem] border border-transparent focus-within:border-slate-300 dark:focus-within:border-slate-600 transition-all shadow-sm pl-2">
+                
+                <input type="file" id="imageScanner" accept="image/*" class="hidden" onchange="handleImageScan(event)">
+                
+                <button type="button" onclick="triggerScanner()" class="p-3 text-slate-400 hover:text-indigo-500 transition-colors active:scale-90" title="Scan Question (OCR)">
+                    <i data-lucide="scan-line" size="24"></i>
+                </button>
+
+                <input type="text" id="aiInput" autocomplete="off" placeholder="Message Guru AI or Scan Photo..." class="flex-1 px-4 py-4 bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder:text-slate-500 w-full font-medium">
+                
+                <button type="submit" id="aiSubmitBtn" class="absolute right-2 p-2.5 bg-black dark:bg-white text-white dark:text-black rounded-full hover:scale-105 transition-all shadow-md flex items-center justify-center">
+                    <i id="aiSubmitIcon" data-lucide="arrow-up" size="20"></i>
+                </button>
+            </form>
+
+            <p class="text-center text-[10px] text-slate-400 mt-3 font-medium">Guru AI can make mistakes. Verify critical JEE strategies.</p>
+        </div>
+    </div>
+
+        <div id="chatHistoryOverlay" class="hidden absolute inset-0 top-[73px] bg-white/95 dark:bg-[#212121]/95 backdrop-blur-md z-40 flex-col border-b border-slate-200 dark:border-white/5">
+            <div class="p-4 bg-slate-50 dark:bg-[#2f2f2f] border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
+                <h3 class="font-black uppercase tracking-widest text-xs text-indigo-500"><i data-lucide="archive" size="14" class="inline mb-0.5"></i> Saved Sessions</h3>
+            </div>
+            <div id="historyList" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scroll">
+                </div>
+        </div>
+        <div id="aiHistory" class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 no-scrollbar custom-scroll bg-white dark:bg-[#212121]"></div>
+
+        <div class="p-4 md:p-6 shrink-0 bg-white dark:bg-[#212121]">
+            <button onclick="document.getElementById('aiToolsTray').classList.toggle('hidden')" class="mb-3 ml-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-[#2f2f2f] text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-indigo-500 transition-all flex items-center gap-2 w-max"><i data-lucide="plus" size="14"></i> Tools</button>
+            
+            <div class="hidden gap-2 mb-3 px-2 overflow-x-auto custom-scroll" id="aiToolsTray">
+                <button type="button" onclick="setAITool('chat', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-indigo-600 text-white shadow-md flex items-center gap-1 shrink-0"><i data-lucide="message-square" size="12"></i> Chat</button>
+                <button type="button" onclick="setAITool('quiz', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-indigo-500 shrink-0 flex items-center gap-1"><i data-lucide="list-checks" size="12"></i> Quiz</button>
+                <button type="button" onclick="setAITool('flowchart', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-indigo-500 shrink-0 flex items-center gap-1"><i data-lucide="git-merge" size="12"></i> Flowchart</button>
+                <button type="button" onclick="setAITool('search', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-blue-500 shrink-0 flex items-center gap-1"><i data-lucide="globe" size="12"></i> Web Search</button>
+                <button type="button" onclick="setAITool('image', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-purple-500 shrink-0 flex items-center gap-1"><i data-lucide="image" size="12"></i> Image</button>
+                <button type="button" onclick="setAITool('video', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-red-500 shrink-0 flex items-center gap-1"><i data-lucide="video" size="12"></i> Video</button>
+            </div>
+            
+            <button type="button" onclick="setAITool('quiz', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-indigo-500 shrink-0 flex items-center gap-1"><i data-lucide="list-checks" size="12"></i> Quiz</button>
+                <button type="button" onclick="setAITool('flowchart', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-indigo-500 shrink-0 flex items-center gap-1"><i data-lucide="git-merge" size="12"></i> Flowchart</button>
+                <button type="button" onclick="setAITool('search', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-blue-500 shrink-0 flex items-center gap-1"><i data-lucide="globe" size="12"></i> Web Search</button>
+                <button type="button" onclick="setAITool('image', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-purple-500 shrink-0 flex items-center gap-1"><i data-lucide="image" size="12"></i> Image</button>
+                <button type="button" onclick="setAITool('video', this)" class="ai-tool-btn px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all bg-slate-200 dark:bg-slate-700 text-slate-500 hover:text-red-500 shrink-0 flex items-center gap-1"><i data-lucide="video" size="12"></i> Video</button>
+            </div>
+           
+           
+            <form id="aiForm" class="max-w-3xl mx-auto relative flex items-center bg-slate-100 dark:bg-[#2f2f2f] rounded-[2rem] border border-transparent focus-within:border-slate-300 dark:focus-within:border-slate-600 transition-all shadow-sm pl-2">
+                
+                <input type="file" id="imageScanner" accept="image/*" class="hidden" onchange="handleImageScan(event)">
+                
+                <button type="button" onclick="triggerScanner()" class="p-3 text-slate-400 hover:text-indigo-500 transition-colors active:scale-90" title="Scan Question (OCR)">
+                    <i data-lucide="scan-line" size="24"></i>
+                </button>
+
+                <input type="text" id="aiInput" autocomplete="off" placeholder="Message Guru AI or Scan Photo..." class="flex-1 px-4 py-4 bg-transparent border-none outline-none text-slate-900 dark:text-white placeholder:text-slate-500 w-full font-medium">
+                
+                <button type="submit" id="aiSubmitBtn" class="absolute right-2 p-2.5 bg-black dark:bg-white text-white dark:text-black rounded-full hover:scale-105 transition-all shadow-md flex items-center justify-center">
+                    <i id="aiSubmitIcon" data-lucide="arrow-up" size="20"></i>
+                </button>
+            </form>
+
+            <p class="text-center text-[10px] text-slate-400 mt-3 font-medium">Guru AI can make mistakes. Verify critical JEE strategies.</p>
+        </div>
+    </div>
+        
+    <!-- Auth Modal -->
+    <div id="loginModal" class="fixed inset-0 z-[2000] bg-slate-950/95 backdrop-blur-3xl flex items-center justify-center p-4 sm:p-6 overflow-y-auto custom-scroll">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-[90%] sm:max-w-md rounded-[2.5rem] md:rounded-[4rem] p-6 sm:p-10 md:p-12 relative shadow-2xl my-auto animate-in zoom-in border border-slate-200 dark:border-slate-800 mx-auto">
+            
+            <div class="mb-6 text-center bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-3xl border border-emerald-100 dark:border-emerald-800">
+                <p class="text-[10px] md:text-xs font-black uppercase tracking-widest text-emerald-600 flex items-center justify-center gap-2 mb-1.5"><i data-lucide="shield-check" size="16"></i> 100% Safe & Secure</p>
+                <p class="text-[9px] md:text-[10px] font-bold text-slate-500 dark:text-slate-400">Powered by Google Firebase. <br> <span class="text-indigo-500">End-to-End Encryption coming soon.</span></p>
+            </div> 
+            
+            <div class="text-center mb-8">
+                <div class="inline-flex p-5 md:p-6 bg-indigo-50 dark:bg-indigo-900/20 rounded-[2rem] text-indigo-600 mb-6 shadow-inner"><i data-lucide="shield-check" size="40"></i></div>
+                <h2 class="text-2xl md:text-4xl font-black uppercase tracking-tighter italic leading-none">Authorization</h2>
+            </div>
+            
+            <div class="flex gap-2 mb-8 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <button onclick="switchAuth('S')" id="atS" class="flex-1 py-3 text-[10px] md:text-[11px] font-black uppercase bg-white dark:bg-slate-700 text-indigo-600 rounded-xl shadow-sm transition-all">Student</button>
+                <button onclick="switchAuth('A')" id="atA" class="flex-1 py-3 text-[10px] md:text-[11px] font-black uppercase text-slate-500 rounded-xl transition-all">Admin</button>
+            </div>
+            
+            <div id="afS" class="space-y-5 animate-in fade-in duration-300">
+                
+                <div class="grid grid-cols-1 gap-3">
+                    <button onclick="loginWithGoogle()" class="flex items-center justify-center gap-3 p-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl hover:bg-slate-100 shadow-sm active:scale-95 transition-all">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        <span class="text-sm font-black uppercase tracking-widest text-slate-700 dark:text-slate-200">Continue with Google</span>
+                    </button>
+                </div>
+
+                <div class="hidden-element">
+                    <div class="relative py-2"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800 opacity-50"></div></div><div class="relative flex justify-center text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 bg-white dark:bg-slate-900 px-4 italic leading-none">Ledger Link</div></div>
+                    <div id="s1" class="space-y-4">
+                        <input type="tel" id="uM" placeholder="Mobile Number" class="w-full px-5 py-3 md:py-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl outline-none font-bold text-base md:text-lg focus:border-indigo-500 transition-colors">
+                        <div id="recaptcha-container"></div>
+                        <button id="otpSendBtn" onclick="sendOTP()" class="w-full bg-slate-950 dark:bg-white dark:text-slate-950 text-white py-4 rounded-2xl font-black uppercase shadow-xl hover:bg-indigo-600 transition-all active:scale-95 text-xs md:text-sm">Send OTP</button>
+                    </div>
+                    <div id="s2" class="hidden-element space-y-4 md:space-y-5">
+                        <input type="number" id="uO" placeholder="Enter 6-digit OTP" class="w-full px-5 py-3 md:py-4 bg-indigo-50 dark:bg-indigo-900/30 border-2 border-indigo-100 rounded-2xl outline-none font-black text-center tracking-[0.6em] text-lg md:text-xl text-indigo-600 transition-shadow focus:border-indigo-500">
+                        <button id="otpVerifyBtn" onclick="valS()" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black uppercase italic shadow-lg active:scale-95 transition-all text-xs md:text-sm">Verify Node</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="afA" class="hidden-element space-y-4 animate-in fade-in duration-300">
+                <input type="text" id="aU" placeholder="Admin ID" class="w-full px-5 py-3 md:py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl outline-none font-bold text-base md:text-lg focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                <input type="password" id="aP" placeholder="Secret Key" class="w-full px-5 py-3 md:py-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl outline-none font-bold text-base md:text-lg focus:ring-2 focus:ring-indigo-500 transition-shadow">
+                <button onclick="valA()" class="w-full bg-slate-950 dark:bg-white dark:text-slate-950 text-white py-4 rounded-2xl font-black uppercase shadow-xl hover:bg-indigo-600 transition-all text-xs md:text-sm">Access Terminal</button>
+            </div>
+        </div>
+    </div>      
+
+    <!-- Unified Player Modal -->
+    <div id="playerModal" class="hidden-element fixed inset-0 z-[5000] bg-black/98 backdrop-blur-3xl flex flex-col items-center justify-center p-4">
+        <button onclick="closePlayer()" class="absolute top-8 right-8 text-white/40 hover:text-white transition-all p-4 z-50 bg-white/5 hover:bg-white/10 rounded-full transition-all"><i data-lucide="x" size="48"></i></button>
+        <div class="w-full max-w-7xl space-y-10 animate-in zoom-in duration-500">
+            <div id="mediaNode" class="bg-black rounded-[4rem] overflow-hidden shadow-[0_0_200px_rgba(99,102,241,0.25)] border border-white/10 aspect-video w-full flex items-center justify-center relative transition-shadow"></div>
+            <div class="px-10 flex flex-col md:flex-row md:items-center justify-between gap-10">
+                <div class="flex-1"><h2 id="mediaTitle" class="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter mb-4 italic leading-none">Archive Title</h2><p id="mediaDesc" class="text-slate-400 font-medium text-2xl leading-relaxed max-w-5xl opacity-80"></p></div>
+                <div class="flex items-center gap-8 bg-white/5 p-8 rounded-[3rem] border border-white/5 shrink-0 italic uppercase font-black text-indigo-400 tracking-[0.4em] text-xs">TANTRA PLAY v3.0</div>
+            </div>
+        </div>
+    </div>
+    <div id="mobileBottomNav" class="hidden-element lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 z-[900] px-6 py-4 flex justify-between items-center shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe">
+        <button onclick="window.scrollTo(0,0)" class="flex flex-col items-center text-indigo-600 transition-transform active:scale-90"><i data-lucide="home" size="22"></i><span class="text-[9px] font-black uppercase tracking-widest mt-1.5">Home</span></button>
+        <button onclick="document.getElementById('mob-btn-video').scrollIntoView()" class="flex flex-col items-center text-slate-400 hover:text-indigo-500 transition-transform active:scale-90"><i data-lucide="play-circle" size="22"></i><span class="text-[9px] font-black uppercase tracking-widest mt-1.5">Lectures</span></button>
+        <button onclick="toggleChat()" class="flex flex-col items-center text-slate-400 hover:text-indigo-500 transition-transform active:scale-90"><i data-lucide="bot" size="22"></i><span class="text-[9px] font-black uppercase tracking-widest mt-1.5">Guru AI</span></button>
+        <button onclick="openAccountDash()" class="flex flex-col items-center text-slate-400 hover:text-indigo-500 transition-transform active:scale-90"><i data-lucide="user-cog" size="22"></i><span class="text-[9px] font-black uppercase tracking-widest mt-1.5">Account</span></button>
+    </div>
+
+    <div id="accountModal" class="hidden-element fixed inset-0 z-[3000] bg-slate-950/60 backdrop-blur-sm flex justify-center md:justify-end items-end md:items-start p-0">
+    
+        <div class="bg-white dark:bg-slate-900 w-full md:w-[420px] h-auto max-h-[90vh] rounded-t-[3.5rem] md:rounded-[3.5rem] p-8 md:p-12 animate-in slide-in-from-bottom-full md:animate-in md:slide-in-from-right md:scale-95 md:origin-top-right md:duration-500 border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-y-auto custom-scroll relative">
+            
+            <div class="flex justify-between items-center mb-10 shrink-0">
+                <div class="flex flex-col">
+                    <h3 class="text-3xl font-black uppercase tracking-tighter italic text-indigo-600">Node Center</h3>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">User Management</span>
+                </div>
+                <button onclick="document.getElementById('accountModal').classList.add('hidden-element')" class="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl text-slate-500 hover:text-red-500 hover:scale-110 transition-all group">
+                    <i data-lucide="x" size="24" class="group-hover:rotate-90 transition-transform"></i>
+                </button>
+            </div>
+            
+            <div class="flex items-center gap-5 mb-10 p-6 bg-slate-50 dark:bg-slate-800 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-inner">
+                <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center text-white shadow-lg shrink-0"><i data-lucide="fingerprint" size="32"></i></div>
+                <div class="overflow-hidden">
+                    <p id="dashName" class="text-xl font-black uppercase tracking-tight truncate"></p>
+                    <p id="dashRole" class="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500 mt-1 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Verified Access</p>
+                </div>
+            </div>
+    
+            <div class="mb-8 p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-[2.5rem] border border-indigo-100 dark:border-indigo-800/30">
+                <h4 class="text-xs font-black uppercase tracking-[0.3em] text-indigo-500 mb-4 flex items-center gap-2"><i data-lucide="bar-chart" size="16"></i> Activity Node</h4>
+                <div id="progressTrackerBox" class="max-h-48 overflow-y-auto custom-scroll pr-2">
+                    </div>
+            </div>
+    
+            <div class="space-y-4 flex-grow">
+                <button onclick="toggleTheme()" class="w-full flex items-center justify-between p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 hover:shadow-xl transition-all border border-transparent hover:border-indigo-200">
+                    <span class="text-sm font-bold flex items-center gap-4 text-slate-700 dark:text-slate-300"><i data-lucide="palette" size="20" class="text-indigo-500"></i> Appearance</span>
+                    <i data-lucide="chevron-right" size="18" class="text-slate-400"></i>
+                </button>
+                <button class="w-full flex items-center justify-between p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 opacity-50 cursor-not-allowed">
+                    <span class="text-sm font-bold flex items-center gap-4 text-slate-700 dark:text-slate-300"><i data-lucide="settings" size="20"></i> Node Settings</span>
+                    <i data-lucide="lock" size="18" class="text-slate-400"></i>
+                </button>
+            </div>
+    
+            <div class="pt-8 mt-8 border-t border-slate-100 dark:border-slate-800 shrink-0">
+                <button onclick="logoutSession()" class="w-full flex items-center justify-center p-6 rounded-[2rem] bg-red-50 dark:bg-red-900/20 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-lg active:scale-95 border border-red-100 dark:border-red-900/50 group">
+                    <span class="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3"><i data-lucide="power" size="20" class="group-hover:rotate-90 transition-transform"></i> Log Out</span>
+                </button>
+                <p class="text-center text-[8px] font-black text-slate-400 uppercase tracking-widest mt-6 opacity-50">Secure Hub ID: TANTRA-V3-ALPHA</p>
+            </div>
+        </div>
+    </div>
+    <!-- Restructured Footer Stack -->
+    <footer class="bg-slate-900 dark:bg-black text-white pt-40 pb-20 rounded-t-[6rem] md:rounded-t-[12rem] mt-40 border-t border-white/5 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-8 md:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-32">
+            <div class="space-y-10">
+                <div class="flex items-center gap-8">
+                    <div class="w-24 h-24 bg-indigo-600 rounded-[3rem] flex items-center justify-center rotate-12 shadow-[0_20px_80px_rgba(99,102,241,0.6)]"><i data-lucide="user" size="56" fill="white"></i></div>
+                    <div><p class="text-4xl font-black uppercase tracking-tighter leading-none">YASH MISHRA</p><p class="text-indigo-400 text-xs font-black uppercase tracking-[0.5em] mt-3 italic leading-none">Portal Architect</p></div>
+                </div>
+                <p class="text-slate-400 text-2xl font-medium opacity-80 leading-relaxed italic">JEE TANTRA: Strategy optimized with digital intelligence. The ultimate node for rank optimization.</p>
+            </div>
+            <div class="space-y-10">
+                <h3 class="text-indigo-400 text-xs font-black uppercase tracking-[0.6em] opacity-80 italic leading-none">Security Group</h3>
+                <div class="bg-slate-800/40 p-12 rounded-[5rem] border border-slate-700 backdrop-blur-3xl group hover:border-indigo-600 transition-all shadow-2xl">
+                    <div class="flex items-center gap-6 mb-8 text-3xl font-black italic tracking-tighter uppercase leading-none"><i data-lucide="shield" class="text-indigo-400" size="40"></i>Beta hackers</div>
+                    <p class="text-slate-400 text-lg leading-relaxed font-medium opacity-70">Securing student data and high-speed distribution nodes since 2024.</p>
+                </div>
+            </div>
+            <div class="space-y-10">
+                <h3 class="text-indigo-400 text-xs font-black uppercase tracking-[0.6em] opacity-80 italic leading-none">Support Portal</h3>
+                <div class="p-12 bg-slate-800/80 rounded-[5rem] border border-slate-700 hover:border-indigo-500 transition-all shadow-2xl relative group">
+                    <p class="text-xs font-black text-slate-500 uppercase tracking-widest mb-6 italic opacity-60 text-center uppercase leading-none">Demand Special Topics</p>
+                    <p class="text-2xl font-bold truncate mb-14 text-white font-mono text-center tracking-tighter select-all">iamprogrammar96@outlook.com</p>
+                    <div class="flex gap-5">
+                        <a href="mailto:iamprogrammar96@outlook.com" class="flex-1 bg-indigo-600 text-center py-5 rounded-[2rem] text-xs font-black uppercase tracking-widest shadow-xl hover:bg-white hover:text-indigo-700 transition-all active:scale-95">Send Mail</a>
+                        <button onclick="copyToClipboard('iamprogrammar96@outlook.com')" class="px-10 bg-slate-700 rounded-[2rem] hover:bg-white hover:text-slate-900 transition-all active:scale-90"><i data-lucide="copy" size="28"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 mt-48 pt-10 border-t border-white/5 text-center">
+             <p class="text-xs font-black text-slate-700 uppercase tracking-[1em] opacity-30 italic leading-none">© 2026 JEE TANTRA | SECURED HUB NODE | Yash Mishra Core</p>
+        </div>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+    <script>
+        // ==========================================
+        // TANTRA ANTI-INSPECT SECURITY SHIELD
+        // ==========================================
+    
+        // Level 1: Right-Click Block (Disable Context Menu)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            window.msg("Access Denied: Restricted Zone");
+        });
+    
+        // Level 2: Keyboard Shortcut Block (F12, Ctrl+Shift+I, Ctrl+U)
+        document.addEventListener('keydown', function(e) {
+            // Block F12
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+            // Block Ctrl+Shift+I (Inspect), Ctrl+Shift+J (Console), Ctrl+Shift+C (Element Select)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+                e.preventDefault();
+                return false;
+            }
+            // Block Ctrl+U (View Source)
+            if (e.ctrlKey && e.key === 'U') {
+                e.preventDefault();
+                return false;
+            }
+        });
+    
+        // Level 3: The "Bloody Fool" Console Troll
+        // Jab koi forcibly DevTools kholta hai, toh use Console mein yeh dikhega
+        setTimeout(() => {
+            console.clear(); // Purane logs saaf karo
+            console.log("%cBloody Fool", "color: red; font-size: 80px; font-weight: 900; text-shadow: 3px 3px 0px black, -1px -1px 0 #000; font-family: sans-serif;");
+            console.log("%cYou are trespassing in the JEE TANTRA Core Engine. Turn back now.", "color: #6366f1; font-size: 20px; font-weight: bold; font-family: monospace;");
+        }, 2000);
+    
+        // Level 4 (Aggressive): The Debugger Trap (Optional)
+        // Yeh continuously browser ko freeze karega agar inspect khula hoga
+        /* setInterval(function() {
+            debugger; 
+        }, 100); 
+        */
+    </script> <div id="scheduleModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[6000] p-4">
+    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl w-full max-w-2xl shadow-2xl border border-slate-800 max-h-[90vh] overflow-y-auto custom-scroll">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-black text-indigo-600 italic uppercase">Schedule Tantra Meet</h3>
+            <button onclick="closeScheduleModal()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white text-2xl">✕</button>
+        </div>
+        
+        <!-- Schedule Form -->
+        <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl mb-6 border border-slate-200 dark:border-slate-700">
+            <input type="text" id="meetTitle" placeholder="Meeting Title" maxlength="100"
+                class="w-full mb-3 p-4 rounded-xl bg-white dark:bg-slate-900 outline-none font-bold border border-slate-200 dark:border-slate-700 focus:border-indigo-500">
+        
+            <input type="datetime-local" id="meetDateTime"
+                class="w-full mb-3 p-4 rounded-xl bg-white dark:bg-slate-900 outline-none font-bold border border-slate-200 dark:border-slate-700 focus:border-indigo-500">
+        
+            <textarea id="meetDesc" placeholder="Description (optional)" maxlength="300"
+                class="w-full mb-6 p-4 rounded-xl bg-white dark:bg-slate-900 outline-none font-medium border border-slate-200 dark:border-slate-700 focus:border-indigo-500 resize-none h-24"></textarea>
+        
+            <div class="flex gap-4">
+                <button onclick="closeScheduleModal()" class="flex-1 p-4 rounded-xl bg-slate-200 dark:bg-slate-800 font-bold uppercase transition-all hover:bg-slate-300 dark:hover:bg-slate-700">Cancel</button>
+                <button onclick="scheduleMeeting()" class="flex-1 p-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold uppercase transition-all hover:from-indigo-700 hover:to-purple-700 shadow-lg">📅 Schedule</button>
+            </div>
+        </div>
+
+        <!-- Scheduled Meetings List -->
+        <div>
+            <h4 class="text-lg font-black text-indigo-600 mb-4 flex items-center gap-2">
+                <i class="fas fa-list"></i> Your Scheduled Meetings
+            </h4>
+            <div id="scheduledMeetList" class="space-y-3 max-h-96 overflow-y-auto custom-scroll">
+                <p class="text-center text-slate-500 py-8">Loading meetings...</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Meeting Share Modal -->
+<div id="shareModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[6000] p-4">
+    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl w-full max-w-md shadow-2xl border border-slate-800">
+        <h3 class="text-2xl font-black mb-6 text-indigo-600 italic uppercase">Share Meeting</h3>
+        
+        <div class="mb-6 p-4 bg-slate-100 dark:bg-slate-800 rounded-xl border border-indigo-200 dark:border-indigo-800">
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2 font-bold">🔑 MEETING UID:</p>
+            <p id="shareUID" class="font-mono font-bold text-indigo-600 text-lg mb-3 break-all">00000000000</p>
+            <button onclick="copyToClipboard(document.getElementById('shareUID').innerText)" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold text-sm hover:bg-indigo-700 transition-all">
+                📋 Copy UID
+            </button>
+        </div>
+
+        <div class="mb-6 p-4 bg-slate-100 dark:bg-slate-800 rounded-xl border border-purple-200 dark:border-purple-800">
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2 font-bold">🔗 SHARE LINK:</p>
+            <p id="shareLink" class="text-sm text-purple-600 break-all mb-3"></p>
+            <button onclick="copyToClipboard(document.getElementById('shareLink').innerText)" class="w-full px-4 py-2 bg-purple-600 text-white rounded-lg font-bold text-sm hover:bg-purple-700 transition-all">
+                📎 Copy Link
+            </button>
+        </div>
+
+        <div class="mb-6">
+            <p class="text-xs text-slate-600 dark:text-slate-400 mb-2 font-bold">📱 Share Via:</p>
+            <div class="flex gap-2">
+                <button onclick="shareViaWhatsApp()" class="flex-1 px-3 py-2 bg-green-600 text-white rounded-lg text-xs font-bold hover:bg-green-700 transition-all">
+                    WhatsApp
+                </button>
+                <button onclick="shareViaEmail()" class="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-all">
+                    Email
+                </button>
+                <button onclick="shareViaCopy()" class="flex-1 px-3 py-2 bg-slate-600 text-white rounded-lg text-xs font-bold hover:bg-slate-700 transition-all">
+                    Copy
+                </button>
+            </div>
+        </div>
+
+        <button onclick="document.getElementById('shareModal').classList.add('hidden')" class="w-full px-4 py-2 bg-slate-200 dark:bg-slate-800 rounded-lg font-bold text-sm hover:bg-slate-300 dark:hover:bg-slate-700 transition-all">
+            Close
+        </button>
+    </div>
+</div>
+
+<script>
+// Share Functions
+window.showShareModal = (uid, title) => {
+    document.getElementById('shareUID').innerText = uid;
+    const shareLink = `${window.location.origin}?join=${uid}`;
+    document.getElementById('shareLink').innerText = shareLink;
+    window.currentShareUID = uid;
+    window.currentShareTitle = title;
+    document.getElementById('shareModal').classList.remove('hidden');
+};
+
+window.shareViaWhatsApp = () => {
+    const uid = document.getElementById('shareUID').innerText;
+    const title = window.currentShareTitle;
+    const link = `${window.location.origin}?join=${uid}`;
+    const text = `🎥 Join my Tantra Meet: "${title}"\n\n🔑 Meeting UID: ${uid}\n🔗 Link: ${link}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+};
+
+window.shareViaEmail = () => {
+    const uid = document.getElementById('shareUID').innerText;
+    const title = window.currentShareTitle;
+    const link = `${window.location.origin}?join=${uid}`;
+    const subject = `Join: ${title}`;
+    const body = `Meeting UID: ${uid}\nJoin Link: ${link}`;
+    window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+};
+
+window.shareViaCopy = () => {
+    const link = document.getElementById('shareLink').innerText;
+    navigator.clipboard.writeText(link);
+    window.msg("📋 Link Copied!");
+};
+</script>
+</body>
+</html>
